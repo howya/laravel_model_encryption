@@ -1,6 +1,6 @@
 <?php
 
-namespace Howya\Modelencryption\Models\Traits;
+namespace Rbennett;
 
 use Carbon\Carbon;
 use TypeError;
