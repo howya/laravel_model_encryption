@@ -1,13 +1,23 @@
 {
-    "name": "rbennett/laravel-model-encryption",
-    "description": "A no fuss Laravel model trait to add encrypted model attributes with the option of blind indexes and hashed attributes.",
-    "type": "library",
-    "authors": [
-        {
-            "name": "Rob Bennett",
-            "email": "rjben@hotmail.com"
-        }
-    ],
-    "minimum-stability": "stable",
-    "require": {}
+  "name": "rbennett/laravel-model-encryption",
+  "description": "A no fuss Laravel model trait to add encrypted model attributes with the option of blind indexes and hashed attributes.",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Rob Bennett",
+      "email": "rjben@hotmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Rbennett\\": "src/Models/Traits/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
 }
