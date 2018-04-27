@@ -3,13 +3,13 @@ A no fuss Laravel model trait to add encrypted model attributes with the option 
 
 Model attributes that are marked as encrypted will be encrypted via Laravel's default encryption. Simply set the model attribute with a value of string, integer, float, boolean or date (as a string) and the value will be persisted as the encrypted value. Accessing the attribute will decrypt the attribute and cast it to it's defined type (a Carbon instance if date).
 
-You may also specify a blind index (BI) attribute that is associated with encrypted attribute. Blind index attributes persist the hashed value of the plain text attributes column. BI attributes can be used for searching the database where search values are encrypted. A 'whereBI' local scope has been added that allows 'where' clauses to be specified using the encrypted attribute name and plain text value.
+You may also specify a blind index (BI) attribute that is associated with encrypted attribute. Blind index attributes persist the hashed value of the associated plain text encrypted attribute column. BI attributes can be used for searching the database where search values are encrypted. A 'whereBI' local scope has been added that allows 'where' clauses to be specified using the encrypted attribute name and plain text value.
 
-Finally, you may specify hashed attributes. These are simply hashed before persitence and cannot be converted to plain text on retreival.
+Finally, you may specify hashed attributes. These are simply hashed before persistence and cannot be converted to plain text on retrieval.
 
 Note - adding a blind index will reduce the security of your encrypted columns as the associated BI is deterministic and will identify collisions in your encrypted data. This is by design, without it your encrypted data would not be searchable.
 
-Note - you may change the hashing alogorith by setting the $hashAlg property on your model, this is set to 'sha256' by default. if you increase the security of the algorithm used then you may have to increase the column size for BI columns. I have found that length 64 works well for sha256.
+Note - you may change the hashing algorithm by setting the $hashAlg property on your model, this is set to 'sha256' by default. if you increase the security of the algorithm used then you may have to increase the column size for BI columns. I have found that length 64 works well for sha256.
 
 Note - this trait does not create DB columns for you. You must create your own migrations. Please see Fixtures/Migrations/2018_04_18_134800_create_test_table.php for an idea of column definitions that fit with the attributes defined within Fixtures/Models/TestModel.php
 
