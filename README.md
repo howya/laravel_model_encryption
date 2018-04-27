@@ -18,7 +18,7 @@ This package requires Laravel 5.6. Earlier versions of Laravel have a different 
 
 # Installation
 ```
-composer require *****
+composer require rbennett/laravel-model-encryption
 ```
 
 # How to use
