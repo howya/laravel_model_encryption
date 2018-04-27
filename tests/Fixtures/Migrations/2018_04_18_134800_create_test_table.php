@@ -22,7 +22,7 @@ class CreateTestTable extends Migration
             $table->string('encrypt_integer_bi', 64)->nullable();
             $table->text('encrypt_boolean')->nullable();
             $table->string('encrypt_boolean_bi', 64)->nullable();
-            $table->text('encrypt_boolean2')->nullable();
+            $table->text('encrypt_another_boolean')->nullable();
             $table->text('encrypt_float')->nullable();
             $table->string('encrypt_float_bi', 64)->nullable();
             $table->text('encrypt_date')->nullable();

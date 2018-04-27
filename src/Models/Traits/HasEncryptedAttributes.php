@@ -1,6 +1,6 @@
 <?php
 
-namespace Howya\Modelencryption\Models\Traits;
+namespace Rbennett;
 
 use Carbon\Carbon;
 use TypeError;
@@ -56,46 +56,57 @@ trait HasEncryptedAttributes
      */
     public $hashAlg = 'sha256';
 
+
     /**
      * @var array
      */
     private $primitiveTypes = ['integer', 'boolean', 'float', 'string'];
 
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public function getAttribute($key)
-    {
-        $value = parent::getAttribute($key);
-
-        return $this->getDecryptIfEncrypted($key, $this->encrypted, $value);
-    }
 
     /**
      * @param $key
      * @param $value
+     * @return string
      */
-    public function setAttribute($key, $value)
-    {
-        $originalValue = $value;
+    private function setEncryptedHashedBIAttributes($key, $value){
 
         if (array_key_exists($key, $this->encrypted)) {
 
-            $this->checkTypes($key, $originalValue);
-            $this->setBlindIndex($key, $originalValue);
-
-            if (!is_null($originalValue)) {
-                $value = encrypt((string)$originalValue);
-            }
+            $this->checkTypes($key, $value);
+            $this->setBlindIndex($key, $value);
+            $value = $this->setEncrypted($value);
         }
+
+        return $this->setHashed($key, $value);
+    }
+
+
+    /**
+     * @param $value
+     * @return string
+     */
+    private function setEncrypted($value){
+        if (!is_null($value)) {
+            $value = encrypt((string)$value);
+        }
+        return $value;
+    }
+
+
+    /**
+     * @param $key
+     * @param $value
+     * @return string
+     */
+    private function setHashed($key, $value){
 
         if (in_array($key, $this->hashed) && !is_null($value) && '' != $value) {
-            $value = $this->getHash($originalValue);
+            $value = $this->getHash($value);
         }
 
-        parent::setAttribute($key, $value);
+        return $value;
     }
+
 
     /**
      * @param $key
@@ -105,59 +116,41 @@ trait HasEncryptedAttributes
     {
         if (array_key_exists('hasBlindIndex', $this->encrypted[$key]) && $this->encrypted[$key]['hasBlindIndex']) {
 
-            if (!is_null($originalValue)) {
+            if (is_null($originalValue)) {
+                $this->{$this->encrypted[$key]['hasBlindIndex']} = null;
 
-                if ('' === $originalValue) {
+            } else if ('' === $originalValue) {
                     $this->{$this->encrypted[$key]['hasBlindIndex']} = '';
-                } else {
-                    $this->{$this->encrypted[$key]['hasBlindIndex']} = $this->getHash($originalValue);
-                }
 
             } else {
-                if (is_null($originalValue)) {
-                    $this->{$this->encrypted[$key]['hasBlindIndex']} = null;
-                }
+                $this->{$this->encrypted[$key]['hasBlindIndex']} = $this->getHash($originalValue);
             }
         }
     }
 
-    /**
-     * @return mixed
-     */
-    public function toArray()
-    {
-        $array = parent::toArray();
-
-        foreach ($array as $key => $attribute) {
-            $array[$key] = $this->getDecryptIfEncrypted($key, $this->encrypted, $attribute);
-        }
-        return $array;
-    }
 
     /**
      * @param $key
-     * @param $encrypted
      * @param $value
-     * @return array|null
+     * @return mixed
      */
-    private function getDecryptIfEncrypted($key, $encrypted, $value)
+    private function getDecryptIfEncrypted($key, $value)
     {
-        if (array_key_exists($key, $encrypted) && !empty($value)) {
-            $decryptionType = array_key_exists('type', $encrypted[$key]) ? $encrypted[$key]['type'] : 'string';
+        if (array_key_exists($key, $this->encrypted) && !empty($value)) {
+
+            $decryptionType = array_key_exists('type', $this->encrypted[$key]) ? $this->encrypted[$key]['type'] : 'string';
 
             if ($decryptionType == 'date') {
-                return $this->castDate(
-                    decrypt($value),
-                    array_key_exists('dateFormat', $encrypted[$key]) ? $encrypted[$key]['dateFormat'] : null
-                );
+                return $this->castDate(decrypt($value),array_key_exists('dateFormat', $this->encrypted[$key]) ? $this->encrypted[$key]['dateFormat'] : null);
+
             } else {
                 return $this->castPrimitive(decrypt($value), $decryptionType);
             }
-
         }
 
         return $value;
     }
+
 
     /**
      * @param $value
@@ -172,8 +165,8 @@ trait HasEncryptedAttributes
         }
 
         return (string)$value;
-
     }
+
 
     /**
      * @param $value
@@ -199,6 +192,7 @@ trait HasEncryptedAttributes
         return hash_hmac($this->hashAlg, (string)$originalValue, env('APP_KEY'));
     }
 
+
     /**
      * @param $key
      * @param $value
@@ -207,35 +201,52 @@ trait HasEncryptedAttributes
      */
     private function checkTypes($key, $value)
     {
-        if (array_key_exists($key, $this->encrypted)) {
+        if (array_key_exists($key, $this->encrypted) && !is_null($value)) {
 
             $type = array_key_exists('type', $this->encrypted[$key]) ? $this->encrypted[$key]['type'] : 'string';
+            $format = array_key_exists('dateFormat', $this->encrypted[$key]) ? $this->encrypted[$key]['dateFormat'] : null;
 
-            if ($type == 'date') {
-                if (!is_null($value)) {
-                    $this->castDate($value, (array_key_exists('dateFormat',
-                        $this->encrypted[$key]) ? $this->encrypted[$key]['dateFormat'] : null));
-                }
-            } else {
-                if ($type == 'float') {
-                    if (gettype($value) != 'float' && gettype($value) != 'integer' && gettype($value) != 'double' && !is_null($value)) {
-                        throw new TypeError("Encryption error, $key not of type $type or null. Type is: " . gettype($value));
-                    }
-                } else {
-                    if (in_array($type, $this->primitiveTypes)) {
-                        if (gettype($value) != $type && !is_null($value)) {
-                            throw new TypeError("Encryption error, $key not of type $type or null. Type is: " . gettype($value));
-                        }
-                    } else {
-                        throw new TypeError("Encryption error, $type not supported");
-                    }
-                }
+            switch($type) {
+                case 'date':
+                    $this->castDate($value, $format);
+                    break;
+                case 'float':
+                    $this->checkType($key, $value, ['float', 'integer', 'double']);
+                    break;
+                default:
+                    if(!in_array($type, $this->primitiveTypes)) throw new TypeError("Encryption error, $type not a supported type of 'integer', 'boolean', 'float', 'string', 'date'");
+                    $this->checkType($key, $value, [$type]);
             }
+
         }
 
         return true;
-
     }
+
+    /**
+     * @param $key
+     * @param $value
+     * @param array $types
+     * @return bool
+     */
+    private function checkType($key, $value, array $types){
+
+        $hasMatchedType = false;
+
+        foreach($types as $type){
+            if (gettype($value) == $type){
+                $hasMatchedType = true;
+                break;
+            }
+        }
+
+        if (!$hasMatchedType){
+            throw new TypeError("Encryption error, $key not of correct type or null. Type is: " . gettype($value));
+        }
+
+        return true;
+    }
+
 
     /**
      * @param $query
@@ -245,21 +256,60 @@ trait HasEncryptedAttributes
      */
     public function scopeWhereBI($query, array $blindIndexQuery)
     {
-        if (array_key_exists(key($blindIndexQuery), $this->encrypted)) {
+        if (array_key_exists(key($blindIndexQuery), $this->encrypted) && array_key_exists('hasBlindIndex', $this->encrypted[key($blindIndexQuery)])) {
 
-            if (array_key_exists('hasBlindIndex', $this->encrypted[key($blindIndexQuery)])) {
+            $columnToSearch = $this->encrypted[key($blindIndexQuery)]['hasBlindIndex'];
+            $unHashedValueToSearch = $blindIndexQuery[key($blindIndexQuery)];
 
-                $columnToSearch = $this->encrypted[key($blindIndexQuery)]['hasBlindIndex'];
-                $unHashedValueToSearch = $blindIndexQuery[key($blindIndexQuery)];
-
-                if (is_null($unHashedValueToSearch) || '' === $unHashedValueToSearch) {
-                    return $query->where($columnToSearch, $unHashedValueToSearch);
-                } else {
-                    return $query->where($columnToSearch, $this->getHash($unHashedValueToSearch));
-                }
+            if (is_null($unHashedValueToSearch) || '' === $unHashedValueToSearch) {
+                return $query->where($columnToSearch, $unHashedValueToSearch);
+            } else {
+                return $query->where($columnToSearch, $this->getHash($unHashedValueToSearch));
             }
         }
 
         throw new \Exception("Blind index column for " . key($blindIndexQuery) . " not found");
     }
+
+
+    //
+    //Eloquent Model method overrides below
+    //
+
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    protected function getAttributeFromArray($key){
+        return $this->getDecryptIfEncrypted($key, parent::getAttributeFromArray($key));
+    }
+
+
+
+    /**
+     * @return array
+     */
+    protected function getArrayableAttributes()
+    {
+        $array = parent::getArrayableAttributes();
+
+        foreach ($array as $key => $attribute) {
+            $array[$key] = $this->getDecryptIfEncrypted($key, $attribute);
+        }
+
+        return $array;
+    }
+
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function setAttribute($key, $value)
+    {
+        parent::setAttribute($key, $this->setEncryptedHashedBIAttributes($key, $value));
+    }
+
+
 }

@@ -2,7 +2,7 @@
 
 namespace Tests\Fixtures\Models;
 
-use App\Support\Models\Traits\HasEncryptedAttributes;
+use Rbennett\HasEncryptedAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 class TestModel extends Model
@@ -11,11 +11,16 @@ class TestModel extends Model
 
     protected $table = 'test_tables';
 
+    protected $connection = 'testbench';
+
+    protected $guarded = [];
+
     protected $fillable = [
         'name',
         'encrypt_string',
         'encrypt_integer',
         'encrypt_boolean',
+        'encrypt_another_boolean',
         'encrypt_float',
         'encrypt_date',
         'hash_string'
@@ -28,7 +33,7 @@ class TestModel extends Model
             ['type' => 'integer', 'hasBlindIndex' => 'encrypt_integer_bi'],
         'encrypt_boolean' =>
             ['type' => 'boolean', 'hasBlindIndex' => 'encrypt_boolean_bi'],
-        'encrypt_boolean2' =>
+        'encrypt_another_boolean' =>
             ['type' => 'boolean'],
         'encrypt_float' =>
             ['type' => 'float', 'hasBlindIndex' => 'encrypt_float_bi'],
