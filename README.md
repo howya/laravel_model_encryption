@@ -1,4 +1,4 @@
-# laravel_model_encryption
+# Laravel model encryption, hashing and blind index
 A no fuss Laravel model trait to add encrypted model attributes with the option of blind indexes and hashed attributes.
 
 Model attributes that are marked as encrypted will be encrypted via Laravel's default encryption. Simply set the model attribute with a value of string, integer, float, boolean or date (as a string) and the value will be persisted as the encrypted value. Accessing the attribute will decrypt the attribute and cast it to it's defined type (a Carbon instance if date).
