@@ -19,5 +19,13 @@
     "psr-4": {
       "Tests\\": "tests/"
     }
+  },
+  "require-dev": {
+    "orchestra/testbench": "~3.6"
+  },
+  "scripts": {
+    "test": [
+      "vendor/bin/phpunit"
+    ]
   }
 }
