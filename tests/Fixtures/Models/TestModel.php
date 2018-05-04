@@ -2,7 +2,7 @@
 
 namespace Tests\Fixtures\Models;
 
-use Rbennett\HasEncryptedAttributes;
+use RBennett\ModelEncryption\HasEncryptedAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 class TestModel extends Model
