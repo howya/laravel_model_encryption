@@ -24,7 +24,7 @@ composer require rbennett/laravel-model-encryption
 # How to use
 ##Add the trait to your model
 ```
-use Rbennett\HasEncryptedAttributes;
+use RBennett\ModelEncryption\HasEncryptedAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 class TestModel extends Model
