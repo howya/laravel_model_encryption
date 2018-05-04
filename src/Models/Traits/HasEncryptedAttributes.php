@@ -1,6 +1,6 @@
 <?php
 
-namespace Rbennett;
+namespace Rbennett\ModelEncryption;
 
 use Carbon\Carbon;
 use TypeError;
