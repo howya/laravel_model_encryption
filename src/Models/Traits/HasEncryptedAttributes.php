@@ -326,6 +326,7 @@ trait HasEncryptedAttributes
     }
 
 
+
     /**
      * @param $key
      * @param $value
@@ -335,5 +336,13 @@ trait HasEncryptedAttributes
         parent::setAttribute($key, $this->setEncryptedHashedBIAttributes($key, $value));
     }
 
+
+    /**
+     * List all encripted columns so we can do some magic after
+     * @return array
+     */
+    public function encriptedColumns(){
+      return (!empty($this->encrypted))? $this->encripted : [];
+    }
 
 }
