@@ -41,7 +41,7 @@ class HasEncryptedAttributesTest extends TestCase
     {
         $models = TestModel::where('name', '!=', 'testNulls')->where('name', '!=', 'testNullsEmptyStrings')->get();
 
-        $this->assertEquals(502, count($models));
+        $this->assertEquals(503, count($models));
 
         foreach ($models as $model) {
 
@@ -122,7 +122,7 @@ class HasEncryptedAttributesTest extends TestCase
     {
         $models = TestModel::where('name', '!=', 'testNulls')->where('name', '!=', 'testNullsEmptyStrings')->get();
 
-        $this->assertEquals(502, count($models));
+        $this->assertEquals(503, count($models));
 
         foreach ($models as $model) {
 
@@ -228,6 +228,28 @@ class HasEncryptedAttributesTest extends TestCase
     /**
      * @return void
      */
+    public function testBulkSeed_localScopeOrForEachValueViaGetProperty1_Test()
+    {
+        $models = TestModel::where(1, 2)->orWhereBI(['encrypt_string' => 'uniqueEmail@unique.com'])->Get();
+
+        $this->assertEquals(1, count($models));
+
+        $this->assertEquals(($models->get(0))->name, 'uniqueName123');
+        $this->assertEquals(($models->get(0))->encrypt_string, 'uniqueEmail@unique.com');
+        $this->assertEquals(($models->get(0))->encrypt_integer, 100);
+        $this->assertEquals(($models->get(0))->encrypt_boolean, true);
+        $this->assertEquals(($models->get(0))->encrypt_another_boolean, false);
+        $this->assertEquals(($models->get(0))->encrypt_float, 10.0001);
+        $this->assertEquals(($models->get(0))->encrypt_date, '2043-12-23 23:59:59');
+        $this->assertEquals(($models->get(0))->hash_string,
+            hash_hmac('sha256', 'A unqiue string that has not been generated',
+                env('APP_KEY')));
+
+    }
+
+    /**
+     * @return void
+     */
     public function testBulkSeed_localScopeForEachValueViaToArray_Test()
     {
         $models = TestModel::whereBI(['encrypt_string' => 'uniqueEmail@unique.com'])->Get();
@@ -247,6 +269,30 @@ class HasEncryptedAttributesTest extends TestCase
             env('APP_KEY')));
 
     }
+
+    /**
+     * @return void
+     */
+    public function testBulkSeed_localScopeOrForEachValueViaToArray_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_string' => 'uniqueEmail@unique.com'])->Get();
+
+        $this->assertEquals(1, count($models));
+
+        $array = ($models->get(0))->toArray();
+
+        $this->assertEquals($array['name'], 'uniqueName123');
+        $this->assertEquals($array['encrypt_string'], 'uniqueEmail@unique.com');
+        $this->assertEquals($array['encrypt_integer'], 100);
+        $this->assertEquals($array['encrypt_boolean'], true);
+        $this->assertEquals($array['encrypt_another_boolean'], false);
+        $this->assertEquals($array['encrypt_float'], 10.0001);
+        $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
+        $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated',
+            env('APP_KEY')));
+
+    }
+
 
     /**
      * @return void
@@ -726,9 +772,31 @@ class HasEncryptedAttributesTest extends TestCase
     /**
      * @return void
      */
+    public function testBulkSeed_localScopeOrStringNull_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_string' => null])->Get();
+
+        $this->assertEquals(1, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
     public function testBulkSeed_localScopeStringEmpty_Test()
     {
         $models = TestModel::whereBI(['encrypt_string' => ''])->Get();
+
+        $this->assertEquals(1, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
+    public function testBulkSeed_localScopeOrStringEmpty_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_string' => ''])->Get();
 
         $this->assertEquals(1, count($models));
 
@@ -748,9 +816,31 @@ class HasEncryptedAttributesTest extends TestCase
     /**
      * @return void
      */
+    public function testBulkSeed_localScopeOrDateNull_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_date' => null])->Get();
+
+        $this->assertEquals(2, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
     public function testBulkSeed_localScopeDateSet_Test()
     {
         $models = TestModel::whereBI(['encrypt_date' => '2023-12-23 23:59:59'])->Get();
+
+        $this->assertEquals(1, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
+    public function testBulkSeed_localScopeOrDateSet_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_date' => '2023-12-23 23:59:59'])->Get();
 
         $this->assertEquals(1, count($models));
 
@@ -770,9 +860,32 @@ class HasEncryptedAttributesTest extends TestCase
     /**
      * @return void
      */
+    public function testBulkSeed_localScopeOrIntegerNull_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_integer' => null])->Get();
+
+        $this->assertEquals(2, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
     public function testBulkSeed_localScopeIntegerSet_Test()
     {
         $models = TestModel::whereBI(['encrypt_integer' => 100])->Get();
+
+        $this->assertEquals(1, count($models));
+
+    }
+
+
+    /**
+     * @return void
+     */
+    public function testBulkSeed_localScopeOrIntegerSet_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_integer' => 100])->Get();
 
         $this->assertEquals(1, count($models));
 
@@ -784,6 +897,17 @@ class HasEncryptedAttributesTest extends TestCase
     public function testBulkSeed_localScopeBooleanNull_Test()
     {
         $models = TestModel::whereBI(['encrypt_boolean' => null])->Get();
+
+        $this->assertEquals(2, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
+    public function testBulkSeed_localScopeOrBooleanNull_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_boolean' => null])->Get();
 
         $this->assertEquals(2, count($models));
 
@@ -806,6 +930,20 @@ class HasEncryptedAttributesTest extends TestCase
     /**
      * @return void
      */
+    public function testBulkSeed_localScopeOrBooleanSet_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_boolean' => true])->Get();
+
+        $total = DB::table('test_tables')->where('encrypt_boolean_bi',
+            hash_hmac('sha256', (string)true, env('APP_KEY')))->count();
+
+        $this->assertEquals($total, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
     public function testBulkSeed_localScopeFloatNull_Test()
     {
         $models = TestModel::whereBI(['encrypt_float' => null])->Get();
@@ -817,9 +955,31 @@ class HasEncryptedAttributesTest extends TestCase
     /**
      * @return void
      */
+    public function testBulkSeed_localScopeOrFloatNull_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_float' => null])->Get();
+
+        $this->assertEquals(2, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
     public function testBulkSeed_localScopeFloatSet_Test()
     {
         $models = TestModel::whereBI(['encrypt_float' => 10.0001])->Get();
+
+        $this->assertEquals(1, count($models));
+
+    }
+
+    /**
+     * @return void
+     */
+    public function testBulkSeed_localScopeOrFloatSet_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_float' => 10.0001])->Get();
 
         $this->assertEquals(1, count($models));
 
@@ -883,6 +1043,24 @@ class HasEncryptedAttributesTest extends TestCase
         $model->delete();
 
         $models = TestModel::whereBI(['encrypt_float' => 10.0001])->Get();
+
+        $this->assertEquals(0, count($models));
+    }
+
+    /**
+     *
+     */
+    public function testDelete_findBylocalScopeOrFloat_Test()
+    {
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_float' => 20.0001])->Get();
+
+        $this->assertEquals(1, count($models));
+
+        $model = $models->get(0);
+
+        $model->delete();
+
+        $models = TestModel::where(1,2)->orWhereBI(['encrypt_float' => 20.0001])->Get();
 
         $this->assertEquals(0, count($models));
     }
