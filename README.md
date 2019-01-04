@@ -33,7 +33,7 @@ class TestModel extends Model
 ```
 
 ## Add Encrypted database columns
-For any DB columns that should be encrypted / decrypted add them to the $encrypted property of the model. 
+For any DB columns that should be encrypted / decrypted add them to the $encrypted property of the model.
 This should be set to an array of form:
 
 ['actual_column_name' => ['type' => 'string|integer|float|boolean|date', {'hasBlindIndex' => 'blind_index_column_name}]]
@@ -69,11 +69,8 @@ protected $hashed = ['column_name1', 'column_name2];
 ```
 
 ## Local scope helper
-A local scope has been added that allows you to query BI columns (whereBI). When using whereBI, pass in an array where the key is the encrypted column name (it will resolve the associated BI column for you) and the value you want to search for. The value should be passed in as plain text in one of the following types:
+A local scope has been added that allows you to query BI columns (whereBI and orWhereBI). When using whereBI or orWhereBI, pass in an array where the key is the encrypted column name (it will resolve the associated BI column for you) and the value you want to search for. The value should be passed in as plain text in one of the following types:
 
 string, integer, float, boolean or date (as a string)
 
 When querying for dates ensure that the date format is identical to the dateformat set within the $encrypted property.
-
-
-
