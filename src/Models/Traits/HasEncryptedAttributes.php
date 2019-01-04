@@ -341,8 +341,9 @@ trait HasEncryptedAttributes
      * List all encripted columns so we can do some magic after
      * @return array
      */
-    public function encriptedColumns(){
-      return (!empty($this->encrypted))? $this->encripted : [];
+    public function encriptedColumns()
+    {
+      return (!empty($this->encrypted))? $this->encrypted : []; 
     }
 
 }
