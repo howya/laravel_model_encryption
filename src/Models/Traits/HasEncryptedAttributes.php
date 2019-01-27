@@ -272,6 +272,30 @@ trait HasEncryptedAttributes
     }
 
 
+    /**
+     * @param $query
+     * @param array $blindIndexQuery
+     * @return mixed
+     * @throws \Exception
+     */
+    public function scopeOrWhereBI($query, array $blindIndexQuery)
+    {
+        if (array_key_exists(key($blindIndexQuery), $this->encrypted) && array_key_exists('hasBlindIndex', $this->encrypted[key($blindIndexQuery)])) {
+
+            $columnToSearch = $this->encrypted[key($blindIndexQuery)]['hasBlindIndex'];
+            $unHashedValueToSearch = $blindIndexQuery[key($blindIndexQuery)];
+
+            if (is_null($unHashedValueToSearch) || '' === $unHashedValueToSearch) {
+                return $query->orWhere($columnToSearch, $unHashedValueToSearch);
+            } else {
+                return $query->orWhere($columnToSearch, $this->getHash($unHashedValueToSearch));
+            }
+        }
+
+        throw new \Exception("Blind index column for " . key($blindIndexQuery) . " not found");
+    }
+
+
     //
     //Eloquent Model method overrides below
     //
@@ -302,6 +326,7 @@ trait HasEncryptedAttributes
     }
 
 
+
     /**
      * @param $key
      * @param $value
@@ -311,5 +336,14 @@ trait HasEncryptedAttributes
         parent::setAttribute($key, $this->setEncryptedHashedBIAttributes($key, $value));
     }
 
+
+    /**
+     * List all encripted columns so we can do some magic after
+     * @return array
+     */
+    public function encriptedColumns()
+    {
+      return (!empty($this->encrypted))? $this->encrypted : []; 
+    }
 
 }

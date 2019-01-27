@@ -52,6 +52,17 @@ class TestSeederTable1 extends \Illuminate\Database\Seeder
             'hash_string' => 'A unqiue string that has not been generated'
         ]);
 
+        factory(TestModel::class, 1)->create([
+            'name' => 'uniqueOrName123',
+            'encrypt_string' => 'uniqueOrEmail@unique.com',
+            'encrypt_integer' => 200,
+            'encrypt_boolean' => true,
+            'encrypt_another_boolean' => false,
+            'encrypt_float' => 20.0001,
+            'encrypt_date' => '2043-12-23 23:59:59',
+            'hash_string' => 'A unqiue string that has not been generated for or'
+        ]);
+
         factory(TestModel::class, 500)->create();
     }
 }
