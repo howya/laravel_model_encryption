@@ -1,3 +1,5 @@
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 # Laravel model encryption, hashing and blind index
 A no fuss Laravel model trait to add encrypted model attributes with the option of blind indexes and hashed attributes.
 
