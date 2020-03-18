@@ -605,6 +605,24 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_date_bi, null);
     }
 
+    /**
+     * @return void
+     */
+    public function testUpdate_existingValuesNotChanged_Test()
+    {
+        $model = TestModel::where('name', 'uniqueName123')->first();
+        $model->encrypt_string = "test";
+        $model->save();
+        $firstEncryption = $model->getOriginal("encrypt_string");
+
+        $model = TestModel::where('name', 'uniqueName123')->first();
+        $model->update([
+            'encrypt_string' => "test"
+        ]);
+        $secondEncryption = $model->getOriginal("encrypt_string");
+
+        $this->assertEquals($firstEncryption, $secondEncryption, "The value didn't change but the encrypted one did");
+    }
 
     /**
      * @return void
@@ -1064,6 +1082,5 @@ class HasEncryptedAttributesTest extends TestCase
 
         $this->assertEquals(0, count($models));
     }
-
 
 }
