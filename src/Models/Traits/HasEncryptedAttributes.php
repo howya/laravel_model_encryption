@@ -333,7 +333,9 @@ trait HasEncryptedAttributes
      */
     public function setAttribute($key, $value)
     {
-        parent::setAttribute($key, $this->setEncryptedHashedBIAttributes($key, $value));
+        if($value !== $this->$key){
+            parent::setAttribute($key, $this->setEncryptedHashedBIAttributes($key, $value));
+        }
     }
 
 
@@ -343,7 +345,7 @@ trait HasEncryptedAttributes
      */
     public function encriptedColumns()
     {
-      return (!empty($this->encrypted))? $this->encrypted : []; 
+      return (!empty($this->encrypted))? $this->encrypted : [];
     }
 
 }
