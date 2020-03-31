@@ -100,7 +100,7 @@ trait HasEncryptedAttributes
      */
     private function setHashed($key, $value){
 
-        if (in_array($key, $this->hashed) && !is_null($value) && '' != $value) {
+        if (in_array($key, $this->hashed??[]) && !is_null($value) && '' != $value) {
             $value = $this->getHash($value);
         }
 
