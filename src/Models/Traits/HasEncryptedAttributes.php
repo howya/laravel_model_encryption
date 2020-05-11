@@ -115,16 +115,13 @@ trait HasEncryptedAttributes
 
             if (is_null($originalValue)) {
                 $this->{$this->encrypted[$key]['hasBlindIndex']} = null;
-
-            } else if ('' === $originalValue) {
+            } else if ('' === $originalValue) { // TODO: add config('ENCRYPT_EMPTY_STRING_BI')
                 $this->{$this->encrypted[$key]['hasBlindIndex']} = '';
-
             } else {
                 $this->{$this->encrypted[$key]['hasBlindIndex']} = $this->getHash($originalValue);
             }
         }
     }
-
 
     /**
      * @param $key
@@ -147,7 +144,6 @@ trait HasEncryptedAttributes
         return $value;
     }
 
-
     /**
      * @param $value
      * @param $type
@@ -163,7 +159,6 @@ trait HasEncryptedAttributes
         return (string)$value;
     }
 
-
     /**
      * @param $value
      * @param null $format
@@ -178,16 +173,14 @@ trait HasEncryptedAttributes
         }
     }
 
-
     /**
      * @param $originalValue
      * @return string
      */
     private function getHash($originalValue)
     {
-        return hash_hmac($this->hashAlg, (string)$originalValue, env('APP_KEY'));
+        return hash_hmac($this->hashAlg, (string)$originalValue, config('app.key'));
     }
-
 
     /**
      * @param $key
@@ -242,7 +235,6 @@ trait HasEncryptedAttributes
         return true;
     }
 
-
     /**
      * @param $query
      * @param array $blindIndexQuery
@@ -265,7 +257,6 @@ trait HasEncryptedAttributes
 
         throw new \Exception("Blind index column for " . key($blindIndexQuery) . " not found");
     }
-
 
     /**
      * @param $query

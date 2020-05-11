@@ -221,7 +221,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals(($models->get(0))->encrypt_date, '2043-12-23 23:59:59');
         $this->assertEquals(($models->get(0))->hash_string,
             hash_hmac('sha256', 'A unqiue string that has not been generated',
-                env('APP_KEY')));
+                config('app.key')));
 
     }
 
@@ -243,7 +243,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals(($models->get(0))->encrypt_date, '2043-12-23 23:59:59');
         $this->assertEquals(($models->get(0))->hash_string,
             hash_hmac('sha256', 'A unqiue string that has not been generated',
-                env('APP_KEY')));
+                config('app.key')));
 
     }
 
@@ -266,7 +266,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($array['encrypt_float'], 10.0001);
         $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
         $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated',
-            env('APP_KEY')));
+            config('app.key')));
 
     }
 
@@ -289,7 +289,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($array['encrypt_float'], 10.0001);
         $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
         $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated',
-            env('APP_KEY')));
+            config('app.key')));
 
     }
 
@@ -329,7 +329,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_date, '2012-12-13 13:39:29');
         $this->assertEquals($model->hash_string,
             hash_hmac('sha256', 'Another unqiue string that has not been generated',
-                env('APP_KEY')));
+                config('app.key')));
 
         $this->assertIsString($model->encrypt_string);
         $this->assertIsInt($model->encrypt_integer);
@@ -340,15 +340,15 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertIsString($model->hash_string);
 
         $this->assertEquals($model->encrypt_string_bi, hash_hmac('sha256', (string)'newValue',
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_integer_bi, hash_hmac('sha256', (string)0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_boolean_bi, hash_hmac('sha256', (string)false,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_float_bi, hash_hmac('sha256', (string)0.0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_date_bi, hash_hmac('sha256', (string)'2012-12-13 13:39:29',
-            env('APP_KEY')));
+            config('app.key')));
     }
 
     /**
@@ -441,11 +441,11 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_string_bi, '');
         $this->assertIsString($model->encrypt_string_bi);
         $this->assertEquals($model->encrypt_integer_bi, hash_hmac('sha256', (string)0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_boolean_bi, hash_hmac('sha256', (string)false,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_float_bi, hash_hmac('sha256', (string)0.0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_date_bi, null);
     }
 
@@ -485,7 +485,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_date, '2012-12-13 13:39:29');
         $this->assertEquals($model->hash_string,
             hash_hmac('sha256', 'Another unqiue string that has not been generated',
-                env('APP_KEY')));
+                config('app.key')));
 
         $this->assertIsString($model->encrypt_string);
         $this->assertIsInt($model->encrypt_integer);
@@ -496,15 +496,15 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertIsString($model->hash_string);
 
         $this->assertEquals($model->encrypt_string_bi, hash_hmac('sha256', (string)'newValue',
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_integer_bi, hash_hmac('sha256', (string)0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_boolean_bi, hash_hmac('sha256', (string)false,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_float_bi, hash_hmac('sha256', (string)0.1,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_date_bi, hash_hmac('sha256', (string)'2012-12-13 13:39:29',
-            env('APP_KEY')));
+            config('app.key')));
     }
 
     /**
@@ -597,11 +597,11 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_string_bi, '');
         $this->assertIsString($model->encrypt_string_bi);
         $this->assertEquals($model->encrypt_integer_bi, hash_hmac('sha256', (string)0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_boolean_bi, hash_hmac('sha256', (string)false,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_float_bi, hash_hmac('sha256', (string)0.0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_date_bi, null);
     }
 
@@ -939,7 +939,7 @@ class HasEncryptedAttributesTest extends TestCase
         $models = TestModel::whereBI(['encrypt_boolean' => true])->Get();
 
         $total = DB::table('test_tables')->where('encrypt_boolean_bi',
-            hash_hmac('sha256', (string)true, env('APP_KEY')))->count();
+            hash_hmac('sha256', (string)true, config('app.key')))->count();
 
         $this->assertEquals($total, count($models));
 
@@ -953,7 +953,7 @@ class HasEncryptedAttributesTest extends TestCase
         $models = TestModel::where(1,2)->orWhereBI(['encrypt_boolean' => true])->Get();
 
         $total = DB::table('test_tables')->where('encrypt_boolean_bi',
-            hash_hmac('sha256', (string)true, env('APP_KEY')))->count();
+            hash_hmac('sha256', (string)true, config('app.key')))->count();
 
         $this->assertEquals($total, count($models));
 
@@ -989,7 +989,6 @@ class HasEncryptedAttributesTest extends TestCase
         $models = TestModel::whereBI(['encrypt_float' => 10.0001])->Get();
 
         $this->assertEquals(1, count($models));
-
     }
 
     /**
@@ -1026,7 +1025,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($array['encrypt_float'], 9999.999);
         $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
         $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated again',
-            env('APP_KEY')));
+            config('app.key')));
 
         $model->save();
 
@@ -1040,7 +1039,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($array['encrypt_float'], 9999.999);
         $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
         $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated again',
-            env('APP_KEY')));
+            config('app.key')));
 
         $models = TestModel::whereBI(['encrypt_float' => 9999.999])->Get();
         $this->assertEquals(1, count($models));
@@ -1081,20 +1080,6 @@ class HasEncryptedAttributesTest extends TestCase
         $models = TestModel::where(1,2)->orWhereBI(['encrypt_float' => 20.0001])->Get();
 
         $this->assertEquals(0, count($models));
-    }
-
-    public function envConfigTest()
-    {
-
-        echo "\n";
-        echo "\n";
-        echo config("app.key");
-        echo "\n";
-        echo env("APP_KEY");
-        echo "\n";
-        echo "\n";
-
-        $this->assertEquals(true, true);
     }
 
 }
