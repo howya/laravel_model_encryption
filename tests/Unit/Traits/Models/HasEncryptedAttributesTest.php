@@ -11,9 +11,9 @@ use Carbon\Carbon;
 class HasEncryptedAttributesTest extends TestCase
 {
     /**
-     *
+     * @return void
      */
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 
@@ -45,19 +45,19 @@ class HasEncryptedAttributesTest extends TestCase
 
         foreach ($models as $model) {
 
-            $this->assertInternalType('string', $model->name);
-            $this->assertInternalType('string', $model->encrypt_string);
-            $this->assertInternalType('integer', $model->encrypt_integer);
-            $this->assertInternalType('boolean', $model->encrypt_boolean);
-            $this->assertInternalType('boolean', $model->encrypt_another_boolean);
-            $this->assertInternalType('float', $model->encrypt_float);
+            $this->assertIsString($model->name);
+            $this->assertIsString($model->encrypt_string);
+            $this->assertIsInt($model->encrypt_integer);
+            $this->assertIsBool($model->encrypt_boolean);
+            $this->assertIsBool($model->encrypt_another_boolean);
+            $this->assertIsFloat($model->encrypt_float);
             $this->assertInstanceOf(Carbon::class, $model->encrypt_date);
-            $this->assertInternalType('string', $model->encrypt_string_bi);
-            $this->assertInternalType('string', $model->encrypt_integer_bi);
-            $this->assertInternalType('string', $model->encrypt_boolean_bi);
-            $this->assertInternalType('string', $model->encrypt_float_bi);
-            $this->assertInternalType('string', $model->encrypt_date_bi);
-            $this->assertInternalType('string', $model->hash_string);
+            $this->assertIsString($model->encrypt_string_bi);
+            $this->assertIsString($model->encrypt_integer_bi);
+            $this->assertIsString($model->encrypt_boolean_bi);
+            $this->assertIsString($model->encrypt_float_bi);
+            $this->assertIsString($model->encrypt_date_bi);
+            $this->assertIsString($model->hash_string);
         }
 
     }
@@ -98,18 +98,18 @@ class HasEncryptedAttributesTest extends TestCase
 
         foreach ($models as $model) {
             $this->assertEquals('', $model->encrypt_string);
-            $this->assertInternalType('string', $model->encrypt_string);
+            $this->assertIsString($model->encrypt_string);
             $this->assertTrue(is_null($model->encrypt_integer));
             $this->assertTrue(is_null($model->encrypt_boolean));
             $this->assertTrue(is_null($model->encrypt_another_boolean));
             $this->assertTrue(is_null($model->encrypt_date));
-            $this->assertInternalType('string', $model->encrypt_string_bi);
+            $this->assertIsString($model->encrypt_string_bi);
             $this->assertTrue(is_null($model->encrypt_integer_bi));
             $this->assertTrue(is_null($model->encrypt_boolean_bi));
             $this->assertTrue(is_null($model->encrypt_float_bi));
             $this->assertTrue(is_null($model->encrypt_date_bi));
             $this->assertEquals('', $model->hash_string);
-            $this->assertInternalType('string', $model->hash_string);
+            $this->assertIsString($model->hash_string);
             $this->assertTrue(is_null($model->encrypt_float));
         }
     }
@@ -128,19 +128,19 @@ class HasEncryptedAttributesTest extends TestCase
 
             $array = $model->toArray();
 
-            $this->assertInternalType('string', $array['name']);
-            $this->assertInternalType('string', $array['encrypt_string']);
-            $this->assertInternalType('integer', $array['encrypt_integer']);
-            $this->assertInternalType('boolean', $array['encrypt_boolean']);
-            $this->assertInternalType('boolean', $array['encrypt_another_boolean']);
-            $this->assertInternalType('float', $array['encrypt_float']);
+            $this->assertIsString($array['name']);
+            $this->assertIsString($array['encrypt_string']);
+            $this->assertIsInt($array['encrypt_integer']);
+            $this->assertIsBool($array['encrypt_boolean']);
+            $this->assertIsBool($array['encrypt_another_boolean']);
+            $this->assertIsFloat($array['encrypt_float']);
             $this->assertInstanceOf(Carbon::class, $array['encrypt_date']);
-            $this->assertInternalType('string', $array['encrypt_string_bi']);
-            $this->assertInternalType('string', $array['encrypt_integer_bi']);
-            $this->assertInternalType('string', $array['encrypt_boolean_bi']);
-            $this->assertInternalType('string', $array['encrypt_float_bi']);
-            $this->assertInternalType('string', $array['encrypt_date_bi']);
-            $this->assertInternalType('string', $array['hash_string']);
+            $this->assertIsString($array['encrypt_string_bi']);
+            $this->assertIsString($array['encrypt_integer_bi']);
+            $this->assertIsString($array['encrypt_boolean_bi']);
+            $this->assertIsString($array['encrypt_float_bi']);
+            $this->assertIsString($array['encrypt_date_bi']);
+            $this->assertIsString($array['hash_string']);
         }
 
     }
@@ -187,18 +187,18 @@ class HasEncryptedAttributesTest extends TestCase
             $array = $model->toArray();
 
             $this->assertEquals('', $array['encrypt_string']);
-            $this->assertInternalType('string', $array['encrypt_string']);
+            $this->assertIsString($array['encrypt_string']);
             $this->assertTrue(is_null($array['encrypt_integer']));
             $this->assertTrue(is_null($array['encrypt_boolean']));
             $this->assertTrue(is_null($array['encrypt_another_boolean']));
             $this->assertTrue(is_null($array['encrypt_date']));
-            $this->assertInternalType('string', $array['encrypt_string_bi']);
+            $this->assertIsString($array['encrypt_string_bi']);
             $this->assertTrue(is_null($array['encrypt_integer_bi']));
             $this->assertTrue(is_null($array['encrypt_boolean_bi']));
             $this->assertTrue(is_null($array['encrypt_float_bi']));
             $this->assertTrue(is_null($array['encrypt_date_bi']));
             $this->assertEquals('', $array['hash_string']);
-            $this->assertInternalType('string', $array['hash_string']);
+            $this->assertIsString($array['hash_string']);
             $this->assertTrue(is_null($array['encrypt_float']));
         }
     }
@@ -221,7 +221,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals(($models->get(0))->encrypt_date, '2043-12-23 23:59:59');
         $this->assertEquals(($models->get(0))->hash_string,
             hash_hmac('sha256', 'A unqiue string that has not been generated',
-                env('APP_KEY')));
+                config('app.key')));
 
     }
 
@@ -243,7 +243,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals(($models->get(0))->encrypt_date, '2043-12-23 23:59:59');
         $this->assertEquals(($models->get(0))->hash_string,
             hash_hmac('sha256', 'A unqiue string that has not been generated',
-                env('APP_KEY')));
+                config('app.key')));
 
     }
 
@@ -266,7 +266,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($array['encrypt_float'], 10.0001);
         $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
         $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated',
-            env('APP_KEY')));
+            config('app.key')));
 
     }
 
@@ -289,7 +289,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($array['encrypt_float'], 10.0001);
         $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
         $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated',
-            env('APP_KEY')));
+            config('app.key')));
 
     }
 
@@ -329,26 +329,26 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_date, '2012-12-13 13:39:29');
         $this->assertEquals($model->hash_string,
             hash_hmac('sha256', 'Another unqiue string that has not been generated',
-                env('APP_KEY')));
+                config('app.key')));
 
-        $this->assertInternalType('string', $model->encrypt_string);
-        $this->assertInternalType('integer', $model->encrypt_integer);
-        $this->assertInternalType('boolean', $model->encrypt_boolean);
-        $this->assertInternalType('boolean', $model->encrypt_another_boolean);
-        $this->assertInternalType('float', $model->encrypt_float);
+        $this->assertIsString($model->encrypt_string);
+        $this->assertIsInt($model->encrypt_integer);
+        $this->assertIsBool($model->encrypt_boolean);
+        $this->assertIsBool($model->encrypt_another_boolean);
+        $this->assertIsFloat($model->encrypt_float);
         $this->assertInstanceOf(Carbon::class, $model->encrypt_date);
-        $this->assertInternalType('string', $model->hash_string);
+        $this->assertIsString($model->hash_string);
 
         $this->assertEquals($model->encrypt_string_bi, hash_hmac('sha256', (string)'newValue',
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_integer_bi, hash_hmac('sha256', (string)0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_boolean_bi, hash_hmac('sha256', (string)false,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_float_bi, hash_hmac('sha256', (string)0.0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_date_bi, hash_hmac('sha256', (string)'2012-12-13 13:39:29',
-            env('APP_KEY')));
+            config('app.key')));
     }
 
     /**
@@ -429,23 +429,23 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_date, null);
         $this->assertEquals($model->hash_string, '');
 
-        $this->assertInternalType('string', $model->encrypt_string);
-        $this->assertInternalType('integer', $model->encrypt_integer);
-        $this->assertInternalType('boolean', $model->encrypt_boolean);
-        $this->assertInternalType('boolean', $model->encrypt_another_boolean);
-        $this->assertInternalType('float', $model->encrypt_float);
+        $this->assertIsString($model->encrypt_string);
+        $this->assertIsInt($model->encrypt_integer);
+        $this->assertIsBool($model->encrypt_boolean);
+        $this->assertIsBool($model->encrypt_another_boolean);
+        $this->assertIsFloat($model->encrypt_float);
         $this->assertTrue(is_null($model->encrypt_date));
-        $this->assertInternalType('null', $model->encrypt_date);
-        $this->assertInternalType('string', $model->hash_string);
+        $this->assertNull($model->encrypt_date);
+        $this->assertIsString($model->hash_string);
 
         $this->assertEquals($model->encrypt_string_bi, '');
-        $this->assertInternalType('string', $model->encrypt_string_bi);
+        $this->assertIsString($model->encrypt_string_bi);
         $this->assertEquals($model->encrypt_integer_bi, hash_hmac('sha256', (string)0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_boolean_bi, hash_hmac('sha256', (string)false,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_float_bi, hash_hmac('sha256', (string)0.0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_date_bi, null);
     }
 
@@ -485,26 +485,26 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_date, '2012-12-13 13:39:29');
         $this->assertEquals($model->hash_string,
             hash_hmac('sha256', 'Another unqiue string that has not been generated',
-                env('APP_KEY')));
+                config('app.key')));
 
-        $this->assertInternalType('string', $model->encrypt_string);
-        $this->assertInternalType('integer', $model->encrypt_integer);
-        $this->assertInternalType('boolean', $model->encrypt_boolean);
-        $this->assertInternalType('boolean', $model->encrypt_another_boolean);
-        $this->assertInternalType('float', $model->encrypt_float);
+        $this->assertIsString($model->encrypt_string);
+        $this->assertIsInt($model->encrypt_integer);
+        $this->assertIsBool($model->encrypt_boolean);
+        $this->assertIsBool($model->encrypt_another_boolean);
+        $this->assertIsFloat($model->encrypt_float);
         $this->assertInstanceOf(Carbon::class, $model->encrypt_date);
-        $this->assertInternalType('string', $model->hash_string);
+        $this->assertIsString($model->hash_string);
 
         $this->assertEquals($model->encrypt_string_bi, hash_hmac('sha256', (string)'newValue',
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_integer_bi, hash_hmac('sha256', (string)0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_boolean_bi, hash_hmac('sha256', (string)false,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_float_bi, hash_hmac('sha256', (string)0.1,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_date_bi, hash_hmac('sha256', (string)'2012-12-13 13:39:29',
-            env('APP_KEY')));
+            config('app.key')));
     }
 
     /**
@@ -585,23 +585,23 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($model->encrypt_date, null);
         $this->assertEquals($model->hash_string, '');
 
-        $this->assertInternalType('string', $model->encrypt_string);
-        $this->assertInternalType('integer', $model->encrypt_integer);
-        $this->assertInternalType('boolean', $model->encrypt_boolean);
-        $this->assertInternalType('boolean', $model->encrypt_another_boolean);
-        $this->assertInternalType('float', $model->encrypt_float);
+        $this->assertIsString($model->encrypt_string);
+        $this->assertIsInt($model->encrypt_integer);
+        $this->assertIsBool($model->encrypt_boolean);
+        $this->assertIsBool($model->encrypt_another_boolean);
+        $this->assertIsFloat($model->encrypt_float);
         $this->assertTrue(is_null($model->encrypt_date));
-        $this->assertInternalType('null', $model->encrypt_date);
-        $this->assertInternalType('string', $model->hash_string);
+        $this->assertNull($model->encrypt_date);
+        $this->assertIsString($model->hash_string);
 
         $this->assertEquals($model->encrypt_string_bi, '');
-        $this->assertInternalType('string', $model->encrypt_string_bi);
+        $this->assertIsString($model->encrypt_string_bi);
         $this->assertEquals($model->encrypt_integer_bi, hash_hmac('sha256', (string)0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_boolean_bi, hash_hmac('sha256', (string)false,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_float_bi, hash_hmac('sha256', (string)0.0,
-            env('APP_KEY')));
+            config('app.key')));
         $this->assertEquals($model->encrypt_date_bi, null);
     }
 
@@ -939,7 +939,7 @@ class HasEncryptedAttributesTest extends TestCase
         $models = TestModel::whereBI(['encrypt_boolean' => true])->Get();
 
         $total = DB::table('test_tables')->where('encrypt_boolean_bi',
-            hash_hmac('sha256', (string)true, env('APP_KEY')))->count();
+            hash_hmac('sha256', (string)true, config('app.key')))->count();
 
         $this->assertEquals($total, count($models));
 
@@ -953,7 +953,7 @@ class HasEncryptedAttributesTest extends TestCase
         $models = TestModel::where(1,2)->orWhereBI(['encrypt_boolean' => true])->Get();
 
         $total = DB::table('test_tables')->where('encrypt_boolean_bi',
-            hash_hmac('sha256', (string)true, env('APP_KEY')))->count();
+            hash_hmac('sha256', (string)true, config('app.key')))->count();
 
         $this->assertEquals($total, count($models));
 
@@ -989,7 +989,6 @@ class HasEncryptedAttributesTest extends TestCase
         $models = TestModel::whereBI(['encrypt_float' => 10.0001])->Get();
 
         $this->assertEquals(1, count($models));
-
     }
 
     /**
@@ -1026,7 +1025,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($array['encrypt_float'], 9999.999);
         $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
         $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated again',
-            env('APP_KEY')));
+            config('app.key')));
 
         $model->save();
 
@@ -1040,7 +1039,7 @@ class HasEncryptedAttributesTest extends TestCase
         $this->assertEquals($array['encrypt_float'], 9999.999);
         $this->assertEquals($array['encrypt_date'], '2043-12-23 23:59:59');
         $this->assertEquals($array['hash_string'], hash_hmac('sha256', 'A unqiue string that has not been generated again',
-            env('APP_KEY')));
+            config('app.key')));
 
         $models = TestModel::whereBI(['encrypt_float' => 9999.999])->Get();
         $this->assertEquals(1, count($models));
